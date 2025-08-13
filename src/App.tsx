@@ -139,6 +139,13 @@ interface RouteResponse {
   type: string;
   features: Array<{
     type: string;
+    properties?: {
+      'track-length'?: number;
+      'filtered ascend'?: number;
+      'filtered descend'?: number;
+      'total-time'?: number;
+      'total-energy'?: number;
+    };
     geometry: {
       type: string;
       coordinates: number[][];
@@ -243,6 +250,12 @@ function App() {
   const [route, setRoute] = useState<Position[]>([]);
   const [isEditingMode, setIsEditingMode] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [routeStats, setRouteStats] = useState<{
+    distance: number;
+    ascent: number;
+    descent: number;
+    time: number;
+  } | null>(null);
 
   const handleMapClick = (position: Position) => {
     if (!isEditingMode) return;
@@ -260,6 +273,7 @@ function App() {
       setStartPoint(position);
       setEndPoint(null);
       setRoute([]);
+      setRouteStats(null);
     }
   };
 
@@ -271,12 +285,23 @@ function App() {
       const data: RouteResponse = await response.json();
 
       if (data.features && data.features.length > 0) {
-        const coordinates = data.features[0].geometry.coordinates;
+        const feature = data.features[0];
+        const coordinates = feature.geometry.coordinates;
         const routePoints: Position[] = coordinates.map(coord => ({
           lat: coord[1],
           lng: coord[0]
         }));
         setRoute(routePoints);
+
+        // Extract route statistics
+        if (feature.properties) {
+          setRouteStats({
+            distance: (feature.properties['track-length'] || 0) / 1000, // Convert to km
+            ascent: feature.properties['filtered ascend'] || 0,
+            descent: feature.properties['filtered descend'] || 0,
+            time: (feature.properties['total-time'] || 0) / 3600 // Convert to hours
+          });
+        }
       }
     } catch (error) {
       console.error('Fehler beim Laden der Route:', error);
@@ -291,6 +316,7 @@ function App() {
       setStartPoint(null);
       setEndPoint(null);
       setRoute([]);
+      setRouteStats(null);
     }
   };
 
@@ -299,6 +325,7 @@ function App() {
     setStartPoint(null);
     setEndPoint(null);
     setRoute([]);
+    setRouteStats(null);
   };
 
   return (
@@ -339,7 +366,7 @@ function App() {
       <MapContainer 
         center={[48.7758, 9.1829]} 
         zoom={10} 
-        style={{ height: 'calc(100vh - 60px)', width: '100%' }}
+        style={{ height: 'calc(100vh - 105px)', width: '100%' }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -389,6 +416,53 @@ function App() {
           />
         )}
       </MapContainer>
+      
+      {/* Footer mit Streckendaten */}
+      <div style={{
+        background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
+        color: 'white',
+        padding: '8px 20px',
+        boxShadow: '0 -2px 4px rgba(0,0,0,0.1)',
+        zIndex: 1000,
+        height: '45px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: routeStats ? 'space-around' : 'center',
+        fontSize: '12px'
+      }}>
+        {routeStats ? (
+          <>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px' }}>
+              <i className="fas fa-route" style={{ fontSize: '12px', color: '#3498db' }}></i>
+              <span style={{ fontWeight: '600', fontSize: '11px' }}>{routeStats.distance.toFixed(1)} km</span>
+              <span style={{ fontSize: '9px', opacity: 0.8 }}>Distanz</span>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px' }}>
+              <i className="fas fa-arrow-up" style={{ fontSize: '12px', color: '#2ecc71' }}></i>
+              <span style={{ fontWeight: '600', fontSize: '11px' }}>{Math.round(routeStats.ascent)} m</span>
+              <span style={{ fontSize: '9px', opacity: 0.8 }}>Anstieg</span>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px' }}>
+              <i className="fas fa-arrow-down" style={{ fontSize: '12px', color: '#e74c3c' }}></i>
+              <span style={{ fontWeight: '600', fontSize: '11px' }}>{Math.round(routeStats.descent)} m</span>
+              <span style={{ fontSize: '9px', opacity: 0.8 }}>Abstieg</span>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px' }}>
+              <i className="fas fa-clock" style={{ fontSize: '12px', color: '#f39c12' }}></i>
+              <span style={{ fontWeight: '600', fontSize: '11px' }}>{Math.floor(routeStats.time)}:{String(Math.round((routeStats.time % 1) * 60)).padStart(2, '0')} h</span>
+              <span style={{ fontSize: '9px', opacity: 0.8 }}>Zeit</span>
+            </div>
+          </>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: 0.7 }}>
+            <i className="fas fa-info-circle" style={{ fontSize: '16px', color: '#3498db' }}></i>
+            <span>Klicken Sie auf "Bearbeiten" und wählen Sie Start- und Endpunkt für eine Route</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
