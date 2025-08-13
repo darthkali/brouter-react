@@ -344,7 +344,7 @@ function App() {
         borderBottom: '1px solid rgba(255,255,255,0.08)',
         zIndex: 1000,
         position: 'relative',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif'
+        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif'
       }}>
         <div style={{ 
           display: 'flex', 
