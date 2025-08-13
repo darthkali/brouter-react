@@ -130,9 +130,9 @@ class ClearButtonControl extends L.Control {
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  iconRetinaUrl: '/images/marker-icon-2x.png',
+  iconUrl: '/images/marker-icon.png',
+  shadowUrl: '/images/marker-shadow.png',
 });
 
 interface Position {
@@ -420,8 +420,8 @@ function App() {
           <Marker 
             position={[startPoint.lat, startPoint.lng]}
             icon={new L.Icon({
-              iconUrl: require('leaflet/dist/images/marker-icon.png'),
-              shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+              iconUrl: '/images/marker-icon.png',
+              shadowUrl: '/images/marker-shadow.png',
               iconSize: [25, 41],
               iconAnchor: [12, 41],
               popupAnchor: [1, -34],
@@ -433,8 +433,8 @@ function App() {
           <Marker 
             position={[endPoint.lat, endPoint.lng]}
             icon={new L.Icon({
-              iconUrl: require('leaflet/dist/images/marker-icon.png'),
-              shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+              iconUrl: '/images/marker-icon.png',
+              shadowUrl: '/images/marker-shadow.png',
               iconSize: [25, 41],
               iconAnchor: [12, 41],
               popupAnchor: [1, -34],
