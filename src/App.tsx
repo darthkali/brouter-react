@@ -334,66 +334,18 @@ function App() {
   };
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="h-screen flex flex-col">
       {/* Navbar */}
-      <nav style={{ 
-        background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
-        color: '#f8fafc',
-        padding: '16px 32px',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
-        zIndex: 1000,
-        position: 'relative',
-        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif'
-      }}>
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '20px',
-          fontSize: '20px',
-          fontWeight: '600'
-        }}>
-          <i className="fas fa-bicycle" style={{ 
-            fontSize: '24px', 
-            color: '#3b82f6',
-            marginRight: '4px'
-          }}></i>
-          <span style={{ 
-            letterSpacing: '-0.025em',
-            fontWeight: '700'
-          }}>VeloRouter</span>
-          <div style={{
-            marginLeft: 'auto',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px'
-          }}>
-            <span style={{ 
-              background: 'rgba(59, 130, 246, 0.1)',
-              border: '1px solid rgba(59, 130, 246, 0.2)',
-              padding: '4px 12px',
-              borderRadius: '20px',
-              fontSize: '12px',
-              fontWeight: '500',
-              color: '#3b82f6',
-              letterSpacing: '0.025em'
-            }}>
+      <nav className="bg-gradient-to-br from-slate-800 to-slate-700 text-slate-50 px-8 py-4 shadow-lg border-b border-white/10 z-[1000] relative font-sans">
+        <div className="flex items-center gap-5 text-xl font-semibold">
+          <i className="fas fa-bicycle text-2xl text-blue-500 mr-1"></i>
+          <span className="tracking-tight font-bold">VeloRouter</span>
+          <div className="ml-auto flex items-center gap-3">
+            <span className="bg-blue-500/10 border border-blue-500/20 px-3 py-1 rounded-full text-xs font-medium text-blue-500 tracking-wider">
               Beta
             </span>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontSize: '12px',
-              color: '#94a3b8'
-            }}>
-              <div style={{
-                width: '6px',
-                height: '6px',
-                borderRadius: '50%',
-                background: '#10b981',
-                animation: 'pulse 2s infinite'
-              }}></div>
+            <div className="flex items-center gap-1.5 text-xs text-slate-400">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
               <span>v0.1.0</span>
             </div>
           </div>
@@ -456,47 +408,36 @@ function App() {
       </MapContainer>
       
       {/* Footer mit Streckendaten */}
-      <div style={{
-        background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
-        color: 'white',
-        padding: '8px 20px',
-        boxShadow: '0 -2px 4px rgba(0,0,0,0.1)',
-        zIndex: 1000,
-        height: '45px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: routeStats ? 'space-around' : 'center',
-        fontSize: '12px'
-      }}>
+      <div className={`bg-gradient-to-br from-slate-700 to-slate-600 text-white px-5 py-2 shadow-[0_-2px_4px_rgba(0,0,0,0.1)] z-[1000] h-[45px] flex items-center text-xs ${routeStats ? 'justify-around' : 'justify-center'}`}>
         {routeStats ? (
           <>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px' }}>
-              <i className="fas fa-route" style={{ fontSize: '12px', color: '#3498db' }}></i>
-              <span style={{ fontWeight: '600', fontSize: '11px' }}>{routeStats.distance.toFixed(1)} km</span>
-              <span style={{ fontSize: '9px', opacity: 0.8 }}>Distanz</span>
+            <div className="flex flex-col items-center gap-px">
+              <i className="fas fa-route text-xs text-blue-400"></i>
+              <span className="font-semibold text-[11px]">{routeStats.distance.toFixed(1)} km</span>
+              <span className="text-[9px] opacity-80">Distanz</span>
             </div>
             
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px' }}>
-              <i className="fas fa-arrow-up" style={{ fontSize: '12px', color: '#2ecc71' }}></i>
-              <span style={{ fontWeight: '600', fontSize: '11px' }}>{Math.round(routeStats.ascent)} m</span>
-              <span style={{ fontSize: '9px', opacity: 0.8 }}>Anstieg</span>
+            <div className="flex flex-col items-center gap-px">
+              <i className="fas fa-arrow-up text-xs text-emerald-500"></i>
+              <span className="font-semibold text-[11px]">{Math.round(routeStats.ascent)} m</span>
+              <span className="text-[9px] opacity-80">Anstieg</span>
             </div>
             
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px' }}>
-              <i className="fas fa-arrow-down" style={{ fontSize: '12px', color: '#e74c3c' }}></i>
-              <span style={{ fontWeight: '600', fontSize: '11px' }}>{Math.round(routeStats.descent)} m</span>
-              <span style={{ fontSize: '9px', opacity: 0.8 }}>Abstieg</span>
+            <div className="flex flex-col items-center gap-px">
+              <i className="fas fa-arrow-down text-xs text-red-500"></i>
+              <span className="font-semibold text-[11px]">{Math.round(routeStats.descent)} m</span>
+              <span className="text-[9px] opacity-80">Abstieg</span>
             </div>
             
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px' }}>
-              <i className="fas fa-clock" style={{ fontSize: '12px', color: '#f39c12' }}></i>
-              <span style={{ fontWeight: '600', fontSize: '11px' }}>{Math.floor(routeStats.time)}:{String(Math.round((routeStats.time % 1) * 60)).padStart(2, '0')} h</span>
-              <span style={{ fontSize: '9px', opacity: 0.8 }}>Zeit</span>
+            <div className="flex flex-col items-center gap-px">
+              <i className="fas fa-clock text-xs text-orange-500"></i>
+              <span className="font-semibold text-[11px]">{Math.floor(routeStats.time)}:{String(Math.round((routeStats.time % 1) * 60)).padStart(2, '0')} h</span>
+              <span className="text-[9px] opacity-80">Zeit</span>
             </div>
           </>
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: 0.7 }}>
-            <i className="fas fa-info-circle" style={{ fontSize: '16px', color: '#3498db' }}></i>
+          <div className="flex items-center gap-2 opacity-70">
+            <i className="fas fa-info-circle text-base text-blue-400"></i>
             <span>Klicken Sie auf "Bearbeiten" und wählen Sie Start- und Endpunkt für eine Route</span>
           </div>
         )}
