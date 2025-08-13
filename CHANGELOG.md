@@ -1,3 +1,15 @@
+# [0.2.0](https://github.com/darthkali/brouter-react/compare/v0.1.0...v0.2.0) (2025-08-13)
+
+
+### Bug Fixes
+
+* correct build command in deployment workflow ([dbfc203](https://github.com/darthkali/brouter-react/commit/dbfc203f623ba474a5261fb644bf0cbbb909fe12))
+
+
+### Features
+
+* add route statistics footer and update map component layout ([310e885](https://github.com/darthkali/brouter-react/commit/310e885a99103ba502f4a0ea695aa728c741610f))
+
 # [0.1.0](https://github.com/darthkali/brouter-react/compare/v0.0.0...v0.1.0) (2025-08-13)
 
 
