@@ -4,6 +4,7 @@ import L from 'leaflet';
 import './App.css';
 import 'leaflet/dist/leaflet.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import packageJson from '../package.json';
 
 // CSS für bewegte gestrichelte Linie und Pulse-Animation
 const animatedDashStyle = `
@@ -348,7 +349,7 @@ function App() {
             </span>
             <div className="flex items-center gap-1.5 text-xs text-secondary">
               <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
-              <span>v0.1.0</span>
+              <span>v{packageJson.version}</span>
             </div>
           </div>
         </div>
