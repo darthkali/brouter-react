@@ -32,7 +32,7 @@ jobs:
       run: npm ci
       
     - name: Build application
-      run: npm run buildwie
+      run: npm run build
       
     - name: Semantic Release
       id: semantic-release
