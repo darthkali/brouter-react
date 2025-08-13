@@ -20,7 +20,7 @@
   /* Funktionale Farben */
   --color-success: #10b981;       /* Grün für Erfolg/Anstieg */
   --color-warning: #f59e0b;       /* Orange für Zeit/Warnung */
-  --color-error: #7600f8;         /* Rot für Fehler/Abstieg */
+  --color-error: #fb0000;         /* Rot für Fehler/Abstieg */
   --color-info: #3b82f6;          /* Blau für Info (gleich wie Primary) */
   
   /* Schatten */

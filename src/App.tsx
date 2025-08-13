@@ -181,7 +181,7 @@ function AnimatedLoadingLine({ startPoint, endPoint }: { startPoint: Position; e
     pathRef.current = L.polyline(
       [[startPoint.lat, startPoint.lng], [endPoint.lat, endPoint.lng]],
       {
-        color: '#3498db',
+        color: 'var(--color-primary)',
         weight: 3,
         opacity: 0.8,
       }
@@ -402,7 +402,7 @@ function App() {
         {route.length > 0 && !loading && (
           <Polyline 
             positions={route.map(point => [point.lat, point.lng])}
-            color="red"
+            color="var(--color-error)"
             weight={5}
             opacity={0.7}
           />
