@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Polyline } from 'react-leaflet';
 import { Position } from '../../types';
-import { createMarkerIcon } from '../../utils/leafletSetup';
+import { createStartPointIcon, createEndPointIcon } from '../../utils/leafletSetup';
 import MapClickHandler from './MapClickHandler';
 import AnimatedLoadingLine from './AnimatedLoadingLine';
 import MapControls from './MapControls';
@@ -15,6 +15,7 @@ interface VeloRouterMapProps {
   onMapClick: (position: Position) => void;
   onToggleEdit: () => void;
   onClearRoute: () => void;
+  onSwapPoints: () => void;
 }
 
 const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
@@ -25,7 +26,8 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
   isEditingMode,
   onMapClick,
   onToggleEdit,
-  onClearRoute
+  onClearRoute,
+  onSwapPoints
 }) => {
   return (
     <MapContainer 
@@ -42,6 +44,9 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
         isEditingMode={isEditingMode}
         onToggleEdit={onToggleEdit}
         onClearRoute={onClearRoute}
+        onSwapPoints={onSwapPoints}
+        startPoint={startPoint}
+        endPoint={endPoint}
       />
       
       <MapClickHandler onMapClick={onMapClick} />
@@ -49,14 +54,14 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
       {startPoint && (
         <Marker 
           position={[startPoint.lat, startPoint.lng]}
-          icon={createMarkerIcon()}
+          icon={createStartPointIcon()}
         />
       )}
       
       {endPoint && (
         <Marker 
           position={[endPoint.lat, endPoint.lng]}
-          icon={createMarkerIcon()}
+          icon={createEndPointIcon()}
         />
       )}
       

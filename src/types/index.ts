@@ -32,6 +32,9 @@ export interface MapControlsProps {
   isEditingMode: boolean;
   onToggleEdit: () => void;
   onClearRoute: () => void;
+  onSwapPoints: () => void;
+  startPoint: Position | null;
+  endPoint: Position | null;
 }
 
 export interface AnimatedLoadingLineProps {

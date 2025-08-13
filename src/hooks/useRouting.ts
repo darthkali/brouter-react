@@ -60,6 +60,15 @@ export const useRouting = () => {
     setRouteStats(null);
   }, []);
 
+  const swapPoints = useCallback(() => {
+    if (startPoint && endPoint) {
+      setStartPoint(endPoint);
+      setEndPoint(startPoint);
+      // Route neu berechnen nach dem Tauschen
+      fetchRouteForPoints(endPoint, startPoint);
+    }
+  }, [startPoint, endPoint, fetchRouteForPoints]);
+
   return {
     startPoint,
     endPoint,
@@ -69,6 +78,7 @@ export const useRouting = () => {
     routeStats,
     handleMapClick,
     toggleEditMode,
-    clearRoute
+    clearRoute,
+    swapPoints
   };
 };

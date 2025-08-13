@@ -10,6 +10,26 @@ export const setupLeafletIcons = () => {
   });
 };
 
+// Create start point icon (green)
+export const createStartPointIcon = () => new L.Icon({
+  iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  shadowUrl: '/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+// Create end point icon (red)
+export const createEndPointIcon = () => new L.Icon({
+  iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+  shadowUrl: '/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
 // Create standard marker icon
 export const createMarkerIcon = () => new L.Icon({
   iconUrl: '/images/marker-icon.png',

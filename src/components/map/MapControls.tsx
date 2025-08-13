@@ -3,15 +3,20 @@ import { useMap } from 'react-leaflet';
 import { MapControlsProps } from '../../types';
 import { EditButtonControl } from './controls/EditButtonControl';
 import { ClearButtonControl } from './controls/ClearButtonControl';
+import { SwapButtonControl } from './controls/SwapButtonControl';
 
 const MapControls: React.FC<MapControlsProps> = ({ 
   isEditingMode, 
   onToggleEdit, 
-  onClearRoute 
+  onClearRoute,
+  onSwapPoints,
+  startPoint,
+  endPoint
 }) => {
   const map = useMap();
   const editControlRef = useRef<EditButtonControl | null>(null);
   const clearControlRef = useRef<ClearButtonControl | null>(null);
+  const swapControlRef = useRef<SwapButtonControl | null>(null);
 
   useEffect(() => {
     if (!editControlRef.current) {
@@ -42,6 +47,25 @@ const MapControls: React.FC<MapControlsProps> = ({
       }
     };
   }, [map, onClearRoute]);
+
+  useEffect(() => {
+    const canSwap = startPoint && endPoint;
+    
+    if (canSwap && !swapControlRef.current) {
+      swapControlRef.current = new SwapButtonControl(onSwapPoints, { position: 'topleft' });
+      swapControlRef.current.addTo(map);
+    } else if (!canSwap && swapControlRef.current) {
+      swapControlRef.current.remove();
+      swapControlRef.current = null;
+    }
+
+    return () => {
+      if (swapControlRef.current) {
+        swapControlRef.current.remove();
+        swapControlRef.current = null;
+      }
+    };
+  }, [map, startPoint, endPoint, onSwapPoints]);
 
   return null;
 };
