@@ -302,11 +302,44 @@ function App() {
   };
 
   return (
-    <div style={{ height: '100vh' }}>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Navbar */}
+      <nav style={{ 
+        background: 'linear-gradient(135deg, #4CAF50 0%, #FFC107 100%)',
+        color: 'white',
+        padding: '12px 24px',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        zIndex: 1000,
+        position: 'relative'
+      }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '12px',
+          fontSize: '20px',
+          fontWeight: '600'
+        }}>
+          <i className="fas fa-bicycle" style={{ fontSize: '24px' }}></i>
+          VeloRouter
+          <span style={{ 
+            background: 'rgba(255,255,255,0.2)',
+            padding: '4px 8px',
+            borderRadius: '12px',
+            fontSize: '12px',
+            fontWeight: '500',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
+          }}>
+            Beta
+          </span>
+        </div>
+      </nav>
+      
+      {/* Map Container */}
       <MapContainer 
         center={[48.7758, 9.1829]} 
         zoom={10} 
-        style={{ height: '100vh', width: '100%' }}
+        style={{ height: 'calc(100vh - 60px)', width: '100%' }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
