@@ -1,3 +1,10 @@
+# [0.3.0](https://github.com/darthkali/brouter-react/compare/v0.2.0...v0.3.0) (2025-08-13)
+
+
+### Features
+
+* enhance navbar with responsive design and add pulse animation ([21cf7d0](https://github.com/darthkali/brouter-react/commit/21cf7d017bf095ae6d0f6e841273634b4956318f))
+
 # [0.2.0](https://github.com/darthkali/brouter-react/compare/v0.1.0...v0.2.0) (2025-08-13)
 
 
