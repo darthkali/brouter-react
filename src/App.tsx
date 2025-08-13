@@ -5,7 +5,7 @@ import './App.css';
 import 'leaflet/dist/leaflet.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-// CSS für bewegte gestrichelte Linie
+// CSS für bewegte gestrichelte Linie und Pulse-Animation
 const animatedDashStyle = `
   @keyframes dash {
     0% { stroke-dashoffset: 0; }
@@ -14,6 +14,11 @@ const animatedDashStyle = `
   .animated-dash {
     stroke-dasharray: 10 5;
     animation: dash 1s linear infinite;
+  }
+  @keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+    100% { opacity: 1; transform: scale(1); }
   }
 `;
 
@@ -332,33 +337,66 @@ function App() {
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Navbar */}
       <nav style={{ 
-        background: 'linear-gradient(135deg, #4CAF50 0%, #FFC107 100%)',
-        color: 'white',
-        padding: '12px 24px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
+        color: '#f8fafc',
+        padding: '16px 32px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
         zIndex: 1000,
-        position: 'relative'
+        position: 'relative',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif'
       }}>
         <div style={{ 
           display: 'flex', 
           alignItems: 'center', 
-          gap: '12px',
+          gap: '20px',
           fontSize: '20px',
           fontWeight: '600'
         }}>
-          <i className="fas fa-bicycle" style={{ fontSize: '24px' }}></i>
-          VeloRouter
+          <i className="fas fa-bicycle" style={{ 
+            fontSize: '24px', 
+            color: '#3b82f6',
+            marginRight: '4px'
+          }}></i>
           <span style={{ 
-            background: 'rgba(255,255,255,0.2)',
-            padding: '4px 8px',
-            borderRadius: '12px',
-            fontSize: '12px',
-            fontWeight: '500',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
+            letterSpacing: '-0.025em',
+            fontWeight: '700'
+          }}>VeloRouter</span>
+          <div style={{
+            marginLeft: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
           }}>
-            Beta
-          </span>
+            <span style={{ 
+              background: 'rgba(59, 130, 246, 0.1)',
+              border: '1px solid rgba(59, 130, 246, 0.2)',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: '500',
+              color: '#3b82f6',
+              letterSpacing: '0.025em'
+            }}>
+              Beta
+            </span>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '12px',
+              color: '#94a3b8'
+            }}>
+              <div style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                background: '#10b981',
+                animation: 'pulse 2s infinite'
+              }}></div>
+              <span>v0.1.0</span>
+            </div>
+          </div>
         </div>
       </nav>
       
