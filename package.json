@@ -48,11 +48,18 @@
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
+    "identity-obj-proxy": "^3.0.0",
+    "jest-transform-stub": "^2.0.0",
     "semantic-release": "^24.2.7"
   },
   "jest": {
     "transformIgnorePatterns": [
       "node_modules/(?!(react-leaflet|@react-leaflet)/)"
-    ]
+    ],
+    "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy",
+      "\\.(png|jpg|jpeg|gif|svg)$": "<rootDir>/src/__mocks__/fileMock.js",
+      "^leaflet/dist/images/.*": "<rootDir>/src/__mocks__/fileMock.js"
+    }
   }
 }

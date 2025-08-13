@@ -2,8 +2,21 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders brouter map application', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const startButton = screen.getByText(/startpunkt wählen/i);
+  expect(startButton).toBeInTheDocument();
+});
+
+test('renders route calculation button', () => {
+  render(<App />);
+  const routeButton = screen.getByText(/route berechnen/i);
+  expect(routeButton).toBeInTheDocument();
+  expect(routeButton).toBeDisabled();
+});
+
+test('renders map container', () => {
+  render(<App />);
+  const mapContainer = screen.getByTestId('map-container');
+  expect(mapContainer).toBeInTheDocument();
 });
