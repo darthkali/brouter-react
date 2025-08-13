@@ -359,7 +359,7 @@ function App() {
       <MapContainer 
         center={[48.7758, 9.1829]} 
         zoom={10} 
-        style={{ height: 'calc(100vh - 105px)', width: '100%' }}
+        style={{ height: 'calc(100vh - 134px)', width: '100%' }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -411,7 +411,7 @@ function App() {
       </MapContainer>
       
       {/* Footer mit Streckendaten */}
-      <div className={`bg-gradient-footer text-primary px-5 py-2 shadow-[0_-2px_4px_rgba(0,0,0,0.1)] z-[1000] h-[45px] flex items-center text-xs ${routeStats ? 'justify-around' : 'justify-center'}`}>
+      <footer className={`bg-gradient-navbar text-primary px-8 py-4 shadow-lg border-t border-white/10 z-[1000] relative font-sans flex items-center text-xs ${routeStats ? 'justify-around' : 'justify-center'}`}>
         {routeStats ? (
           <>
             <div className="flex flex-col items-center gap-px">
@@ -444,7 +444,7 @@ function App() {
             <span>Klicken Sie auf "Bearbeiten" und wählen Sie Start- und Endpunkt für eine Route</span>
           </div>
         )}
-      </div>
+      </footer>
     </div>
   );
 }
