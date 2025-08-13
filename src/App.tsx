@@ -57,20 +57,21 @@ class EditButtonControl extends L.Control {
     if (!this.container) return;
     
     this.container.style.cssText = `
-      background-color: ${this.isEditingMode ? '#e74c3c' : '#3498db'};
-      color: white;
+      background-color: ${this.isEditingMode ? 'var(--color-error)' : 'var(--color-primary)'};
+      color: var(--color-text-primary);
       border: none;
       padding: 8px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      box-shadow: var(--shadow-md);
       width: 36px;
       height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 5px;
+      transition: all 0.2s ease;
     `;
     
     this.container.innerHTML = `<i class="fas ${this.isEditingMode ? 'fa-stop' : 'fa-edit'}"></i>`;
@@ -99,19 +100,20 @@ class ClearButtonControl extends L.Control {
   onAdd() {
     this.container = L.DomUtil.create('button', 'leaflet-clear-control') as HTMLButtonElement;
     this.container.style.cssText = `
-      background-color: #e67e22;
-      color: white;
+      background-color: var(--color-warning);
+      color: var(--color-text-primary);
       border: none;
       padding: 8px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      box-shadow: var(--shadow-md);
       width: 36px;
       height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: all 0.2s ease;
     `;
     
     this.container.innerHTML = '<i class="fas fa-trash"></i>';
@@ -336,16 +338,16 @@ function App() {
   return (
     <div className="h-screen flex flex-col">
       {/* Navbar */}
-      <nav className="bg-gradient-to-br from-slate-800 to-slate-700 text-slate-50 px-8 py-4 shadow-lg border-b border-white/10 z-[1000] relative font-sans">
+      <nav className="bg-gradient-navbar text-primary px-8 py-4 shadow-lg border-b border-white/10 z-[1000] relative font-sans">
         <div className="flex items-center gap-5 text-xl font-semibold">
-          <i className="fas fa-bicycle text-2xl text-blue-500 mr-1"></i>
+          <i className="fas fa-bicycle text-2xl text-brand mr-1"></i>
           <span className="tracking-tight font-bold">VeloRouter</span>
           <div className="ml-auto flex items-center gap-3">
-            <span className="bg-blue-500/10 border border-blue-500/20 px-3 py-1 rounded-full text-xs font-medium text-blue-500 tracking-wider">
+            <span className="bg-brand/10 border border-brand/20 px-3 py-1 rounded-full text-xs font-medium text-brand tracking-wider">
               Beta
             </span>
-            <div className="flex items-center gap-1.5 text-xs text-slate-400">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+            <div className="flex items-center gap-1.5 text-xs text-secondary">
+              <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
               <span>v0.1.0</span>
             </div>
           </div>
@@ -408,36 +410,36 @@ function App() {
       </MapContainer>
       
       {/* Footer mit Streckendaten */}
-      <div className={`bg-gradient-to-br from-slate-700 to-slate-600 text-white px-5 py-2 shadow-[0_-2px_4px_rgba(0,0,0,0.1)] z-[1000] h-[45px] flex items-center text-xs ${routeStats ? 'justify-around' : 'justify-center'}`}>
+      <div className={`bg-gradient-footer text-primary px-5 py-2 shadow-[0_-2px_4px_rgba(0,0,0,0.1)] z-[1000] h-[45px] flex items-center text-xs ${routeStats ? 'justify-around' : 'justify-center'}`}>
         {routeStats ? (
           <>
             <div className="flex flex-col items-center gap-px">
-              <i className="fas fa-route text-xs text-blue-400"></i>
+              <i className="fas fa-route text-xs text-info"></i>
               <span className="font-semibold text-[11px]">{routeStats.distance.toFixed(1)} km</span>
               <span className="text-[9px] opacity-80">Distanz</span>
             </div>
             
             <div className="flex flex-col items-center gap-px">
-              <i className="fas fa-arrow-up text-xs text-emerald-500"></i>
+              <i className="fas fa-arrow-up text-xs text-success"></i>
               <span className="font-semibold text-[11px]">{Math.round(routeStats.ascent)} m</span>
               <span className="text-[9px] opacity-80">Anstieg</span>
             </div>
             
             <div className="flex flex-col items-center gap-px">
-              <i className="fas fa-arrow-down text-xs text-red-500"></i>
+              <i className="fas fa-arrow-down text-xs text-error"></i>
               <span className="font-semibold text-[11px]">{Math.round(routeStats.descent)} m</span>
               <span className="text-[9px] opacity-80">Abstieg</span>
             </div>
             
             <div className="flex flex-col items-center gap-px">
-              <i className="fas fa-clock text-xs text-orange-500"></i>
+              <i className="fas fa-clock text-xs text-warning"></i>
               <span className="font-semibold text-[11px]">{Math.floor(routeStats.time)}:{String(Math.round((routeStats.time % 1) * 60)).padStart(2, '0')} h</span>
               <span className="text-[9px] opacity-80">Zeit</span>
             </div>
           </>
         ) : (
           <div className="flex items-center gap-2 opacity-70">
-            <i className="fas fa-info-circle text-base text-blue-400"></i>
+            <i className="fas fa-info-circle text-base text-info"></i>
             <span>Klicken Sie auf "Bearbeiten" und wählen Sie Start- und Endpunkt für eine Route</span>
           </div>
         )}
