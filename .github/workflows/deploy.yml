@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 env:
-  DOCKER_IMAGE: darthkali/brouter-react
+  DOCKER_IMAGE: brouter-react
 
 permissions:
   contents: write
