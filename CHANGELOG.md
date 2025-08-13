@@ -1,3 +1,10 @@
+## [0.3.1](https://github.com/darthkali/brouter-react/compare/v0.3.0...v0.3.1) (2025-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency node to v22 ([731476b](https://github.com/darthkali/brouter-react/commit/731476b38007c12ce552b594b6bc197da62a9208))
+
 # [0.3.0](https://github.com/darthkali/brouter-react/compare/v0.2.0...v0.3.0) (2025-08-13)
 
 
