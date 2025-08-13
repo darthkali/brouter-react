@@ -1,3 +1,11 @@
+## [0.4.1](https://github.com/darthkali/brouter-react/compare/v0.4.0...v0.4.1) (2025-08-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @types/jest to v30 ([3af7d8e](https://github.com/darthkali/brouter-react/commit/3af7d8ebca0f78d44c773569a52af91f4dde6720))
+* **deps:** update dependency web-vitals to v5 ([ee7c894](https://github.com/darthkali/brouter-react/commit/ee7c894386360d903f8d482f71352d1d1afa2953))
+
 # [0.4.0](https://github.com/darthkali/brouter-react/compare/v0.3.1...v0.4.0) (2025-08-13)
 
 
