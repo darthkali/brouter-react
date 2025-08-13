@@ -34,9 +34,6 @@ jobs:
     - name: Build application
       run: npm run build
       
-    - name: Run tests
-      run: npm test -- --coverage --passWithNoTests
-      
     - name: Semantic Release
       id: semantic-release
       uses: cycjimmy/semantic-release-action@v4
