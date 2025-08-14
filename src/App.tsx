@@ -44,6 +44,20 @@ function App() {
     injectAnimationStyles();
   }, []);
 
+  // Add ESC key handler to exit edit mode
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isEditingMode) {
+        toggleEditMode();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isEditingMode, toggleEditMode]);
+
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       <Navbar />

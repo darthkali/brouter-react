@@ -140,29 +140,29 @@ export const useRouting = () => {
       setStartPoint(position);
     } else if (!endPoint) {
       setEndPoint(position);
-      setIsEditingMode(false);
+      // Don't exit edit mode - keep it active for adding more points
       // Create initial route segment
       setTimeout(() => {
         createSegmentsFromPoints(startPoint, position, []);
       }, 100);
     } else {
-      setStartPoint(position);
-      setEndPoint(null);
-      setWaypoints([]);
-      setRouteSegments([]);
-      setRouteStats(null);
+      // We have both start and end point, so add this as a waypoint and make it the new end point
+      const newWaypoints = [...waypoints, endPoint];
+      
+      setWaypoints(newWaypoints);
+      setEndPoint(position);
+      
+      // Update the route with the new waypoint and end point
+      setTimeout(() => {
+        createSegmentsFromPoints(startPoint, position, newWaypoints);
+      }, 100);
     }
-  }, [isEditingMode, startPoint, endPoint, createSegmentsFromPoints]);
+  }, [isEditingMode, startPoint, endPoint, waypoints, createSegmentsFromPoints]);
 
   const toggleEditMode = useCallback(() => {
     setIsEditingMode(!isEditingMode);
-    if (!isEditingMode) {
-      setStartPoint(null);
-      setEndPoint(null);
-      setWaypoints([]);
-      setRouteSegments([]);
-      setRouteStats(null);
-    }
+    // Don't clear the route when starting edit mode - only when stopping
+    // This allows continuing to add points to existing routes
   }, [isEditingMode]);
 
   const clearRoute = useCallback(() => {
