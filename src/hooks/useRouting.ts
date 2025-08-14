@@ -11,6 +11,7 @@ export const useRouting = () => {
   const [loading, setLoading] = useState(false);
   const [loadingSegments, setLoadingSegments] = useState<LoadingSegment[]>([]);
   const [routeStats, setRouteStats] = useState<RouteStats | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const generateSegmentId = useCallback((start: Position, end: Position): string => {
     return `${start.lat.toFixed(6)}-${start.lng.toFixed(6)}_${end.lat.toFixed(6)}-${end.lng.toFixed(6)}`;
@@ -192,7 +193,7 @@ export const useRouting = () => {
   }, [generateSegmentId]);
 
   const handleMapClick = useCallback((position: Position) => {
-    if (!isEditingMode) return;
+    if (!isEditingMode || isDragging) return;
     
     if (!startPoint) {
       setStartPoint(position);
@@ -216,7 +217,7 @@ export const useRouting = () => {
         addNewSegment(currentEndPoint, position);
       }, 100);
     }
-  }, [isEditingMode, startPoint, endPoint, waypoints, createSegmentsFromPoints, addNewSegment]);
+  }, [isEditingMode, isDragging, startPoint, endPoint, waypoints, createSegmentsFromPoints, addNewSegment]);
 
   const toggleEditMode = useCallback(() => {
     setIsEditingMode(!isEditingMode);
@@ -280,6 +281,17 @@ export const useRouting = () => {
       createSegmentsFromPoints(position, endPoint, waypoints);
     }
   }, [endPoint, waypoints, createSegmentsFromPoints]);
+
+  const onMarkerDragStart = useCallback(() => {
+    setIsDragging(true);
+  }, []);
+
+  const onMarkerDragEnd = useCallback(() => {
+    // Reset drag status after a short delay to prevent immediate click handling
+    setTimeout(() => {
+      setIsDragging(false);
+    }, 50);
+  }, []);
 
   const updateEndPoint = useCallback((position: Position) => {
     setEndPoint(position);
@@ -457,6 +469,8 @@ export const useRouting = () => {
     updateWaypoint,
     removeWaypoint,
     removeStartPoint,
-    removeEndPoint
+    removeEndPoint,
+    onMarkerDragStart,
+    onMarkerDragEnd
   };
 };

@@ -28,6 +28,8 @@ interface VeloRouterMapProps {
   onRemoveWaypoint: (index: number) => void;
   onRemoveStartPoint: () => void;
   onRemoveEndPoint: () => void;
+  onMarkerDragStart?: () => void;
+  onMarkerDragEnd?: () => void;
 }
 
 const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
@@ -49,7 +51,9 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
   onUpdateWaypoint,
   onRemoveWaypoint,
   onRemoveStartPoint,
-  onRemoveEndPoint
+  onRemoveEndPoint,
+  onMarkerDragStart,
+  onMarkerDragEnd
 }) => {
   return (
     <MapContainer 
@@ -80,10 +84,14 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
           draggable={true}
           zIndexOffset={2000}
           eventHandlers={{
+            dragstart: () => {
+              onMarkerDragStart?.();
+            },
             dragend: (e) => {
               const marker = e.target;
               const position = marker.getLatLng();
               onUpdateStartPoint({ lat: position.lat, lng: position.lng });
+              onMarkerDragEnd?.();
             },
             dblclick: () => {
               onRemoveStartPoint();
@@ -100,10 +108,14 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
           draggable={true}
           zIndexOffset={2000} // Higher z-index to ensure it's above polylines
           eventHandlers={{
+            dragstart: () => {
+              onMarkerDragStart?.();
+            },
             dragend: (e) => {
               const marker = e.target;
               const position = marker.getLatLng();
               onUpdateWaypoint(index, { lat: position.lat, lng: position.lng });
+              onMarkerDragEnd?.();
             },
             dblclick: () => {
               onRemoveWaypoint(index);
@@ -119,10 +131,14 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
           draggable={true}
           zIndexOffset={2000}
           eventHandlers={{
+            dragstart: () => {
+              onMarkerDragStart?.();
+            },
             dragend: (e) => {
               const marker = e.target;
               const position = marker.getLatLng();
               onUpdateEndPoint({ lat: position.lat, lng: position.lng });
+              onMarkerDragEnd?.();
             },
             dblclick: () => {
               onRemoveEndPoint();

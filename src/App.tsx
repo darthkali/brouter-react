@@ -36,7 +36,9 @@ function App() {
     updateWaypoint,
     removeWaypoint,
     removeStartPoint,
-    removeEndPoint
+    removeEndPoint,
+    onMarkerDragStart,
+    onMarkerDragEnd
   } = useRouting();
 
   useEffect(() => {
@@ -83,6 +85,8 @@ function App() {
           onRemoveWaypoint={removeWaypoint}
           onRemoveStartPoint={removeStartPoint}
           onRemoveEndPoint={removeEndPoint}
+          onMarkerDragStart={onMarkerDragStart}
+          onMarkerDragEnd={onMarkerDragEnd}
         />
       </div>
       
