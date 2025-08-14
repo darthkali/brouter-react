@@ -1,3 +1,29 @@
+# [0.5.0](https://github.com/darthkali/brouter-react/compare/v0.4.3...v0.5.0) (2025-08-14)
+
+
+### Bug Fixes
+
+* update package version to 0.4.3 in package-lock.json ([c0f1533](https://github.com/darthkali/brouter-react/commit/c0f15337ef558d7c768d6f8fb900f774bb1ae58d))
+
+
+### Features
+
+* add ESC key handler to exit edit mode and improve waypoint management ([cd5bd3e](https://github.com/darthkali/brouter-react/commit/cd5bd3e5a9a5f6eda6608bc68f2031f6a54a5b7d))
+* add functionality to create new route segments and handle loading states ([937e3f2](https://github.com/darthkali/brouter-react/commit/937e3f27edbc2891e74953cdf871336a13f22fb8))
+* add functionality to remove start and end points in routing ([2d31a9e](https://github.com/darthkali/brouter-react/commit/2d31a9e9fa90ff2d46b5c15e5ba8e08c54165ae8))
+* add map cursor management for editing mode ([e6d36f0](https://github.com/darthkali/brouter-react/commit/e6d36f0a9edd132b9ee3d6cac7f5e9aafae0213d))
+* add marker drag handling to improve click detection and routing interactions ([a0ed548](https://github.com/darthkali/brouter-react/commit/a0ed54894fd731c5a6da5cf2b11d3ed18cdd459b))
+* add numbered waypoint icons and update CSS for waypoints ([0fbaacc](https://github.com/darthkali/brouter-react/commit/0fbaacc3a5729ad532a60da14c3647012635081a))
+* add profile selection functionality to customize routing behavior ([97dc3ae](https://github.com/darthkali/brouter-react/commit/97dc3aed83e862f6a9885b1c138da7bc8af6dadc))
+* add update start and end point functionality with draggable markers ([5c62319](https://github.com/darthkali/brouter-react/commit/5c62319761b201f2abc7baa00a7d554e609b8619))
+* enhance draggable polyline with hover functionality and waypoint management ([6ee3787](https://github.com/darthkali/brouter-react/commit/6ee3787ca224e54e0ad74029c7e6d80a4d6518f4))
+* enhance route statistics calculation with improved ascent and descent handling ([3054e7f](https://github.com/darthkali/brouter-react/commit/3054e7f131f7ea443dcff57ffbd20f0bdd352175))
+* enhance routing functionality with waypoints and loading segments ([a9082dc](https://github.com/darthkali/brouter-react/commit/a9082dcac07ac7bbd9213b67430b3bf9ee06f6e4))
+* enhance waypoint interaction with hover effects and proximity checks ([55df4a7](https://github.com/darthkali/brouter-react/commit/55df4a749d243c5a411c5909dff47d4d13eb4ecd))
+* enhance waypoint update functionality with segment management and loading states ([4b4eb2c](https://github.com/darthkali/brouter-react/commit/4b4eb2cfa50cc88d74ceb1628b729281418278fe))
+* optimize route segment updates by allowing direct modification of first and last segments ([c62e3fb](https://github.com/darthkali/brouter-react/commit/c62e3fb8bfcb8efc4e48247d4a763b52e6058564))
+* refactor numbered waypoint icon creation to use canvas for improved rendering ([ff96c81](https://github.com/darthkali/brouter-react/commit/ff96c81372472d751b0ac48e1a8f4dcd653d459a))
+
 ## [0.4.3](https://github.com/darthkali/brouter-react/compare/v0.4.2...v0.4.3) (2025-08-14)
 
 
