@@ -26,6 +26,7 @@ function App() {
     loading,
     loadingSegments,
     routeStats,
+    selectedProfile,
     handleMapClick,
     toggleEditMode,
     clearRoute,
@@ -37,6 +38,7 @@ function App() {
     removeWaypoint,
     removeStartPoint,
     removeEndPoint,
+    changeProfile,
     onMarkerDragStart,
     onMarkerDragEnd
   } = useRouting();
@@ -62,7 +64,11 @@ function App() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <Navbar />
+      <Navbar 
+        selectedProfile={selectedProfile}
+        onProfileChange={changeProfile}
+        loading={loading}
+      />
       
       <div className="flex-1 min-h-0">
         <VeloRouterMap

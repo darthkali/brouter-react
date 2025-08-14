@@ -1,7 +1,7 @@
 import { Position, RouteResponse, RouteStats } from '../types';
 
-export const fetchRoute = async (start: Position, end: Position): Promise<{ route: Position[]; stats: RouteStats | null }> => {
-  const url = `http://localhost:17777/brouter?lonlats=${start.lng},${start.lat}|${end.lng},${end.lat}&profile=mtb&format=geojson`;
+export const fetchRoute = async (start: Position, end: Position, profile: string = 'mtb'): Promise<{ route: Position[]; stats: RouteStats | null }> => {
+  const url = `http://localhost:17777/brouter?lonlats=${start.lng},${start.lat}|${end.lng},${end.lat}&profile=${profile}&format=geojson`;
   const response = await fetch(url);
   const data: RouteResponse = await response.json();
 

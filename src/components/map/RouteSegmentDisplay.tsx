@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Polyline } from 'react-leaflet';
-import { RouteSegment } from '../../types';
+import { RouteSegment, Position } from '../../types';
 
 interface RouteSegmentDisplayProps {
   segments: RouteSegment[];
@@ -15,47 +15,47 @@ const RouteSegmentDisplay: React.FC<RouteSegmentDisplayProps> = ({
   weight = 5,
   opacity = 0.7
 }) => {
-  return (
-    <>
-      {segments.map((segment) => {
-        // Only render segments that are not loading and have coordinates
-        if (segment.isLoading || segment.coordinates.length < 2) {
-          return null;
-        }
+  // Check if any segment is loading
+  const hasLoadingSegments = segments.some(segment => segment.isLoading);
+  
+  // If any segment is loading, don't render the route
+  if (hasLoadingSegments || segments.length === 0) {
+    return null;
+  }
 
-        return (
-          <Polyline
-            key={segment.id}
-            positions={segment.coordinates.map(point => [point.lat, point.lng])}
-            color={color}
-            weight={weight}
-            opacity={opacity}
-          />
-        );
-      })}
-    </>
+  // Combine all segments into one continuous route
+  const fullRoute: Position[] = segments.reduce<Position[]>((acc, segment, index) => {
+    if (segment.coordinates.length < 2) return acc;
+    
+    if (index === 0) {
+      // First segment: include all coordinates
+      return [...segment.coordinates];
+    } else {
+      // Subsequent segments: skip first coordinate to avoid duplication
+      return [...acc, ...segment.coordinates.slice(1)];
+    }
+  }, []);
+
+  // Only render if we have a complete route
+  if (fullRoute.length < 2) {
+    return null;
+  }
+
+  return (
+    <Polyline
+      positions={fullRoute.map(point => [point.lat, point.lng])}
+      color={color}
+      weight={weight}
+      opacity={opacity}
+      interactive={false} // Disable interaction to avoid conflicts with DraggablePolyline
+    />
   );
 };
 
-// Memoize component to prevent unnecessary re-renders
+// Simplified memoization - only check if segments array changed
 export default memo(RouteSegmentDisplay, (prevProps, nextProps) => {
-  // Custom comparison to avoid re-rendering if segments haven't changed
-  if (prevProps.segments.length !== nextProps.segments.length) {
-    return false;
-  }
-  
-  for (let i = 0; i < prevProps.segments.length; i++) {
-    const prev = prevProps.segments[i];
-    const next = nextProps.segments[i];
-    
-    if (prev.id !== next.id || 
-        prev.isLoading !== next.isLoading || 
-        prev.coordinates.length !== next.coordinates.length) {
-      return false;
-    }
-  }
-  
   return (
+    prevProps.segments === nextProps.segments &&
     prevProps.color === nextProps.color &&
     prevProps.weight === nextProps.weight &&
     prevProps.opacity === nextProps.opacity

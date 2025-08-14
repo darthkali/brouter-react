@@ -12,6 +12,7 @@ export const useRouting = () => {
   const [loadingSegments, setLoadingSegments] = useState<LoadingSegment[]>([]);
   const [routeStats, setRouteStats] = useState<RouteStats | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState<string>('mtb');
 
   const generateSegmentId = useCallback((start: Position, end: Position): string => {
     return `${start.lat.toFixed(6)}-${start.lng.toFixed(6)}_${end.lat.toFixed(6)}-${end.lng.toFixed(6)}`;
@@ -43,7 +44,7 @@ export const useRouting = () => {
       const segmentId = generateSegmentId(segStart, segEnd);
       
       try {
-        const { route: segmentRoute, stats } = await fetchRoute(segStart, segEnd);
+        const { route: segmentRoute, stats } = await fetchRoute(segStart, segEnd, selectedProfile);
         
         newSegments.push({
           id: segmentId,
@@ -82,57 +83,8 @@ export const useRouting = () => {
     
     setLoading(false);
     setLoadingSegments([]);
-  }, [generateSegmentId]);
+  }, [generateSegmentId, selectedProfile]);
 
-  const replaceSegmentWithTwo = useCallback(async (
-    segmentToReplace: RouteSegment, 
-    newWaypoint: Position
-  ) => {
-    setLoading(true);
-    
-    // Remove the old segment and add loading segments
-    setRouteSegments(prev => prev.filter(seg => seg.id !== segmentToReplace.id));
-    
-    const loadingSegs: LoadingSegment[] = [
-      { start: segmentToReplace.start, end: newWaypoint },
-      { start: newWaypoint, end: segmentToReplace.end }
-    ];
-    setLoadingSegments(loadingSegs);
-    
-    // Fetch the two new segments
-    const newSegments: RouteSegment[] = [];
-    
-    try {
-      // First segment: original start -> new waypoint
-      const { route: route1 } = await fetchRoute(segmentToReplace.start, newWaypoint);
-      newSegments.push({
-        id: generateSegmentId(segmentToReplace.start, newWaypoint),
-        start: segmentToReplace.start,
-        end: newWaypoint,
-        coordinates: route1,
-        isLoading: false
-      });
-      
-      // Second segment: new waypoint -> original end
-      const { route: route2 } = await fetchRoute(newWaypoint, segmentToReplace.end);
-      newSegments.push({
-        id: generateSegmentId(newWaypoint, segmentToReplace.end),
-        start: newWaypoint,
-        end: segmentToReplace.end,
-        coordinates: route2,
-        isLoading: false
-      });
-      
-      // Add the new segments
-      setRouteSegments(prev => [...prev, ...newSegments]);
-      
-    } catch (error) {
-      console.error('Error creating new segments:', error);
-    }
-    
-    setLoading(false);
-    setLoadingSegments([]);
-  }, [generateSegmentId]);
 
   const addNewSegment = useCallback(async (fromPoint: Position, toPoint: Position) => {
     setLoading(true);
@@ -142,7 +94,7 @@ export const useRouting = () => {
     setLoadingSegments([loadingSeg]);
     
     try {
-      const { route: segmentRoute, stats } = await fetchRoute(fromPoint, toPoint);
+      const { route: segmentRoute, stats } = await fetchRoute(fromPoint, toPoint, selectedProfile);
       
       const newSegment: RouteSegment = {
         id: generateSegmentId(fromPoint, toPoint),
@@ -190,114 +142,101 @@ export const useRouting = () => {
     
     setLoading(false);
     setLoadingSegments([]);
-  }, [generateSegmentId]);
+  }, [generateSegmentId, selectedProfile]);
 
-  const updateFirstSegment = useCallback(async (newStartPoint: Position) => {
-    if (!endPoint || routeSegments.length === 0) return;
+  const updateFirstSegment = useCallback(async (newStartPoint: Position, currentEndPoint: Position, currentWaypoints: Position[]) => {
+    // Get the target point - either first waypoint or end point
+    const targetPoint = currentWaypoints.length > 0 ? currentWaypoints[0] : currentEndPoint;
     
-    // Find the first segment
-    const firstSegment = routeSegments[0];
-    if (!firstSegment) return;
+    // Don't modify any existing segments until we have the new one ready
+    if (routeSegments.length === 0) return;
     
+    // Set loading state and add loading segment
     setLoading(true);
+    setLoadingSegments([{ start: newStartPoint, end: targetPoint }]);
     
-    // Remove the old first segment and add loading segment
-    setRouteSegments(prev => prev.slice(1));
-    setLoadingSegments([{ start: newStartPoint, end: firstSegment.end }]);
+    // Mark the first segment as loading to hide it visually
+    setRouteSegments(prev => prev.map((segment, index) => 
+      index === 0 ? { ...segment, isLoading: true } : segment
+    ));
     
     try {
-      const { route: newRoute, stats } = await fetchRoute(newStartPoint, firstSegment.end);
+      const { route: newRoute } = await fetchRoute(newStartPoint, targetPoint, selectedProfile);
       
       const newSegment: RouteSegment = {
-        id: generateSegmentId(newStartPoint, firstSegment.end),
+        id: generateSegmentId(newStartPoint, targetPoint),
         start: newStartPoint,
-        end: firstSegment.end,
+        end: targetPoint,
         coordinates: newRoute,
         isLoading: false
       };
       
-      // Add the new segment at the beginning
-      setRouteSegments(prev => [newSegment, ...prev]);
-      
-      // Update route stats by replacing the old first segment's contribution
-      if (stats) {
-        setRouteStats(prevStats => {
-          if (!prevStats) return null;
-          // We don't know the old segment's stats, so we recalculate from all segments
-          // This could be optimized further by storing stats per segment
-          return prevStats; // For now, keep existing stats
-        });
-      }
+      // Replace the first segment with the new one
+      setRouteSegments(prev => [newSegment, ...prev.slice(1)]);
       
     } catch (error) {
       console.error('Error updating first segment:', error);
       // Add error segment
       const errorSegment: RouteSegment = {
-        id: generateSegmentId(newStartPoint, firstSegment.end),
+        id: generateSegmentId(newStartPoint, targetPoint),
         start: newStartPoint,
-        end: firstSegment.end,
-        coordinates: [newStartPoint, firstSegment.end],
+        end: targetPoint,
+        coordinates: [newStartPoint, targetPoint],
         isLoading: false
       };
-      setRouteSegments(prev => [errorSegment, ...prev]);
+      setRouteSegments(prev => [errorSegment, ...prev.slice(1)]);
     }
     
     setLoading(false);
     setLoadingSegments([]);
-  }, [endPoint, routeSegments, generateSegmentId]);
+  }, [routeSegments, generateSegmentId, selectedProfile]);
 
-  const updateLastSegment = useCallback(async (newEndPoint: Position) => {
-    if (!startPoint || routeSegments.length === 0) return;
+  const updateLastSegment = useCallback(async (newEndPoint: Position, currentStartPoint: Position, currentWaypoints: Position[]) => {
+    // Get the source point - either last waypoint or start point
+    const sourcePoint = currentWaypoints.length > 0 ? currentWaypoints[currentWaypoints.length - 1] : currentStartPoint;
     
-    // Find the last segment
-    const lastSegment = routeSegments[routeSegments.length - 1];
-    if (!lastSegment) return;
+    // Don't modify any existing segments until we have the new one ready
+    if (routeSegments.length === 0) return;
     
+    // Set loading state and add loading segment
     setLoading(true);
+    setLoadingSegments([{ start: sourcePoint, end: newEndPoint }]);
     
-    // Remove the old last segment and add loading segment
-    setRouteSegments(prev => prev.slice(0, -1));
-    setLoadingSegments([{ start: lastSegment.start, end: newEndPoint }]);
+    // Mark the last segment as loading to hide it visually
+    setRouteSegments(prev => prev.map((segment, index) => 
+      index === prev.length - 1 ? { ...segment, isLoading: true } : segment
+    ));
     
     try {
-      const { route: newRoute, stats } = await fetchRoute(lastSegment.start, newEndPoint);
+      const { route: newRoute } = await fetchRoute(sourcePoint, newEndPoint, selectedProfile);
       
       const newSegment: RouteSegment = {
-        id: generateSegmentId(lastSegment.start, newEndPoint),
-        start: lastSegment.start,
+        id: generateSegmentId(sourcePoint, newEndPoint),
+        start: sourcePoint,
         end: newEndPoint,
         coordinates: newRoute,
         isLoading: false
       };
       
-      // Add the new segment at the end
-      setRouteSegments(prev => [...prev, newSegment]);
-      
-      // Update route stats by replacing the old last segment's contribution
-      if (stats) {
-        setRouteStats(prevStats => {
-          if (!prevStats) return null;
-          // We don't know the old segment's stats, so we keep existing for now
-          return prevStats;
-        });
-      }
+      // Replace the last segment with the new one
+      setRouteSegments(prev => [...prev.slice(0, -1), newSegment]);
       
     } catch (error) {
       console.error('Error updating last segment:', error);
       // Add error segment
       const errorSegment: RouteSegment = {
-        id: generateSegmentId(lastSegment.start, newEndPoint),
-        start: lastSegment.start,
+        id: generateSegmentId(sourcePoint, newEndPoint),
+        start: sourcePoint,
         end: newEndPoint,
-        coordinates: [lastSegment.start, newEndPoint],
+        coordinates: [sourcePoint, newEndPoint],
         isLoading: false
       };
-      setRouteSegments(prev => [...prev, errorSegment]);
+      setRouteSegments(prev => [...prev.slice(0, -1), errorSegment]);
     }
     
     setLoading(false);
     setLoadingSegments([]);
-  }, [startPoint, routeSegments, generateSegmentId]);
+  }, [routeSegments, generateSegmentId, selectedProfile]);
 
   const handleMapClick = useCallback((position: Position) => {
     if (!isEditingMode || isDragging) return;
@@ -360,36 +299,30 @@ export const useRouting = () => {
     const newWaypoints = [...waypoints];
     if (index !== undefined) {
       newWaypoints.splice(index, 0, position);
-      
-      // Find the segment that needs to be replaced
-      const allPoints = [startPoint, ...waypoints, endPoint];
-      const segmentStart = allPoints[index];
-      const segmentEnd = allPoints[index + 1];
-      const segmentToReplace = routeSegments.find(seg => 
-        seg.start.lat === segmentStart.lat && seg.start.lng === segmentStart.lng &&
-        seg.end.lat === segmentEnd.lat && seg.end.lng === segmentEnd.lng
-      );
-      
-      setWaypoints(newWaypoints);
-      
-      if (segmentToReplace) {
-        replaceSegmentWithTwo(segmentToReplace, position);
-      }
     } else {
       newWaypoints.push(position);
-      setWaypoints(newWaypoints);
-      createSegmentsFromPoints(startPoint, endPoint, newWaypoints);
     }
-  }, [startPoint, endPoint, waypoints, routeSegments, replaceSegmentWithTwo, createSegmentsFromPoints]);
+    
+    setWaypoints(newWaypoints);
+    
+    // Always recalculate entire route to avoid inconsistencies
+    createSegmentsFromPoints(startPoint, endPoint, newWaypoints);
+  }, [startPoint, endPoint, waypoints, createSegmentsFromPoints]);
 
   const updateStartPoint = useCallback((position: Position) => {
+    // IMMEDIATELY update the marker position - no dependencies on segment calculations
     setStartPoint(position);
+    
+    // Background segment update - don't let this affect the marker position
     if (endPoint && routeSegments.length > 0) {
-      // Only update the first segment instead of recalculating entire route
-      updateFirstSegment(position);
+      // Use setTimeout to ensure the position update happens first
+      setTimeout(() => {
+        updateFirstSegment(position, endPoint, waypoints);
+      }, 10);
     } else if (endPoint) {
-      // Fallback to full recalculation if no segments exist yet
-      createSegmentsFromPoints(position, endPoint, waypoints);
+      setTimeout(() => {
+        createSegmentsFromPoints(position, endPoint, waypoints);
+      }, 10);
     }
   }, [endPoint, waypoints, routeSegments.length, updateFirstSegment, createSegmentsFromPoints]);
 
@@ -405,97 +338,32 @@ export const useRouting = () => {
   }, []);
 
   const updateEndPoint = useCallback((position: Position) => {
+    // IMMEDIATELY update the marker position - no dependencies on segment calculations
     setEndPoint(position);
+    
+    // Background segment update - don't let this affect the marker position
     if (startPoint && routeSegments.length > 0) {
-      // Only update the last segment instead of recalculating entire route
-      updateLastSegment(position);
+      // Use setTimeout to ensure the position update happens first
+      setTimeout(() => {
+        updateLastSegment(position, startPoint, waypoints);
+      }, 10);
     } else if (startPoint) {
-      // Fallback to full recalculation if no segments exist yet
-      createSegmentsFromPoints(startPoint, position, waypoints);
+      setTimeout(() => {
+        createSegmentsFromPoints(startPoint, position, waypoints);
+      }, 10);
     }
   }, [startPoint, waypoints, routeSegments.length, updateLastSegment, createSegmentsFromPoints]);
 
-  const updateWaypoint = useCallback(async (index: number, position: Position) => {
+  const updateWaypoint = useCallback((index: number, position: Position) => {
     if (!startPoint || !endPoint) return;
     
     const updated = [...waypoints];
     updated[index] = position;
     setWaypoints(updated);
     
-    // Find the two segments that need to be updated
-    const allPoints = [startPoint, ...waypoints, endPoint];
-    const newAllPoints = [startPoint, ...updated, endPoint];
-    
-    // The waypoint at index affects two segments:
-    // 1. From allPoints[index] to allPoints[index + 1] 
-    // 2. From allPoints[index + 1] to allPoints[index + 2]
-    const segmentBefore = {
-      start: allPoints[index],
-      end: allPoints[index + 1], // old waypoint position
-    };
-    const segmentAfter = {
-      start: allPoints[index + 1], // old waypoint position
-      end: allPoints[index + 2],
-    };
-    
-    // New segments with updated waypoint position
-    const newSegmentBefore = {
-      start: newAllPoints[index],
-      end: newAllPoints[index + 1], // new waypoint position
-    };
-    const newSegmentAfter = {
-      start: newAllPoints[index + 1], // new waypoint position
-      end: newAllPoints[index + 2],
-    };
-    
-    setLoading(true);
-    
-    // Remove old segments and add loading segments
-    setRouteSegments(prev => prev.filter(seg => {
-      const beforeId = generateSegmentId(segmentBefore.start, segmentBefore.end);
-      const afterId = generateSegmentId(segmentAfter.start, segmentAfter.end);
-      return seg.id !== beforeId && seg.id !== afterId;
-    }));
-    
-    setLoadingSegments([
-      { start: newSegmentBefore.start, end: newSegmentBefore.end },
-      { start: newSegmentAfter.start, end: newSegmentAfter.end }
-    ]);
-    
-    try {
-      // Fetch new segments
-      const newSegments: RouteSegment[] = [];
-      
-      // First segment
-      const { route: route1 } = await fetchRoute(newSegmentBefore.start, newSegmentBefore.end);
-      newSegments.push({
-        id: generateSegmentId(newSegmentBefore.start, newSegmentBefore.end),
-        start: newSegmentBefore.start,
-        end: newSegmentBefore.end,
-        coordinates: route1,
-        isLoading: false
-      });
-      
-      // Second segment
-      const { route: route2 } = await fetchRoute(newSegmentAfter.start, newSegmentAfter.end);
-      newSegments.push({
-        id: generateSegmentId(newSegmentAfter.start, newSegmentAfter.end),
-        start: newSegmentAfter.start,
-        end: newSegmentAfter.end,
-        coordinates: route2,
-        isLoading: false
-      });
-      
-      // Add new segments
-      setRouteSegments(prev => [...prev, ...newSegments]);
-      
-    } catch (error) {
-      console.error('Error updating waypoint segments:', error);
-    }
-    
-    setLoading(false);
-    setLoadingSegments([]);
-  }, [startPoint, endPoint, waypoints, generateSegmentId]);
+    // Always recalculate entire route to avoid inconsistencies
+    createSegmentsFromPoints(startPoint, endPoint, updated);
+  }, [startPoint, endPoint, waypoints, createSegmentsFromPoints]);
 
   const removeWaypoint = useCallback((index: number) => {
     if (!startPoint || !endPoint) return;
@@ -504,6 +372,15 @@ export const useRouting = () => {
     setWaypoints(updated);
     
     createSegmentsFromPoints(startPoint, endPoint, updated);
+  }, [startPoint, endPoint, waypoints, createSegmentsFromPoints]);
+
+  const changeProfile = useCallback((newProfile: string) => {
+    setSelectedProfile(newProfile);
+    
+    // Recalculate existing route with new profile
+    if (startPoint && endPoint) {
+      createSegmentsFromPoints(startPoint, endPoint, waypoints);
+    }
   }, [startPoint, endPoint, waypoints, createSegmentsFromPoints]);
 
   const removeStartPoint = useCallback(() => {
@@ -574,6 +451,7 @@ export const useRouting = () => {
     loading,
     loadingSegments,
     routeStats,
+    selectedProfile,
     handleMapClick,
     toggleEditMode,
     clearRoute,
@@ -585,6 +463,7 @@ export const useRouting = () => {
     removeWaypoint,
     removeStartPoint,
     removeEndPoint,
+    changeProfile,
     onMarkerDragStart,
     onMarkerDragEnd
   };
