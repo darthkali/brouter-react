@@ -26,6 +26,8 @@ interface VeloRouterMapProps {
   onAddWaypoint: (position: Position, index: number) => void;
   onUpdateWaypoint: (index: number, position: Position) => void;
   onRemoveWaypoint: (index: number) => void;
+  onRemoveStartPoint: () => void;
+  onRemoveEndPoint: () => void;
 }
 
 const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
@@ -45,7 +47,9 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
   onUpdateEndPoint,
   onAddWaypoint,
   onUpdateWaypoint,
-  onRemoveWaypoint
+  onRemoveWaypoint,
+  onRemoveStartPoint,
+  onRemoveEndPoint
 }) => {
   return (
     <MapContainer 
@@ -79,6 +83,9 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
               const marker = e.target;
               const position = marker.getLatLng();
               onUpdateStartPoint({ lat: position.lat, lng: position.lng });
+            },
+            dblclick: () => {
+              onRemoveStartPoint();
             }
           }}
         />
@@ -114,6 +121,9 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
               const marker = e.target;
               const position = marker.getLatLng();
               onUpdateEndPoint({ lat: position.lat, lng: position.lng });
+            },
+            dblclick: () => {
+              onRemoveEndPoint();
             }
           }}
         />

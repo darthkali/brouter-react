@@ -34,7 +34,9 @@ function App() {
     updateEndPoint,
     addWaypoint,
     updateWaypoint,
-    removeWaypoint
+    removeWaypoint,
+    removeStartPoint,
+    removeEndPoint
   } = useRouting();
 
   useEffect(() => {
@@ -65,6 +67,8 @@ function App() {
           onAddWaypoint={addWaypoint}
           onUpdateWaypoint={updateWaypoint}
           onRemoveWaypoint={removeWaypoint}
+          onRemoveStartPoint={removeStartPoint}
+          onRemoveEndPoint={removeEndPoint}
         />
       </div>
       

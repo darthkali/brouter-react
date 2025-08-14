@@ -320,6 +320,54 @@ export const useRouting = () => {
     createSegmentsFromPoints(startPoint, endPoint, updated);
   }, [startPoint, endPoint, waypoints, createSegmentsFromPoints]);
 
+  const removeStartPoint = useCallback(() => {
+    if (!startPoint) return;
+    
+    if (waypoints.length > 0) {
+      // First waypoint becomes new start point
+      const newStartPoint = waypoints[0];
+      const newWaypoints = waypoints.slice(1);
+      
+      setStartPoint(newStartPoint);
+      setWaypoints(newWaypoints);
+      
+      if (endPoint) {
+        createSegmentsFromPoints(newStartPoint, endPoint, newWaypoints);
+      }
+    } else if (endPoint) {
+      // Only end point remains, clear everything
+      setStartPoint(null);
+      setEndPoint(null);
+      setWaypoints([]);
+      setRouteSegments([]);
+      setRouteStats(null);
+    }
+  }, [startPoint, waypoints, endPoint, createSegmentsFromPoints]);
+
+  const removeEndPoint = useCallback(() => {
+    if (!endPoint) return;
+    
+    if (waypoints.length > 0) {
+      // Last waypoint becomes new end point
+      const newEndPoint = waypoints[waypoints.length - 1];
+      const newWaypoints = waypoints.slice(0, -1);
+      
+      setEndPoint(newEndPoint);
+      setWaypoints(newWaypoints);
+      
+      if (startPoint) {
+        createSegmentsFromPoints(startPoint, newEndPoint, newWaypoints);
+      }
+    } else if (startPoint) {
+      // Only start point remains, clear everything
+      setStartPoint(null);
+      setEndPoint(null);
+      setWaypoints([]);
+      setRouteSegments([]);
+      setRouteStats(null);
+    }
+  }, [endPoint, waypoints, startPoint, createSegmentsFromPoints]);
+
   // Compute combined route for legacy compatibility
   const route = routeSegments.reduce<Position[]>((acc, segment, index) => {
     if (index === 0) {
@@ -348,6 +396,8 @@ export const useRouting = () => {
     updateEndPoint,
     addWaypoint,
     updateWaypoint,
-    removeWaypoint
+    removeWaypoint,
+    removeStartPoint,
+    removeEndPoint
   };
 };
