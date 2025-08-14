@@ -19,14 +19,28 @@ function App() {
   const {
     startPoint,
     endPoint,
+    waypoints,
     route,
+    routeSegments,
     isEditingMode,
     loading,
+    loadingSegments,
     routeStats,
+    selectedProfile,
     handleMapClick,
     toggleEditMode,
     clearRoute,
-    swapPoints
+    swapPoints,
+    updateStartPoint,
+    updateEndPoint,
+    addWaypoint,
+    updateWaypoint,
+    removeWaypoint,
+    removeStartPoint,
+    removeEndPoint,
+    changeProfile,
+    onMarkerDragStart,
+    onMarkerDragEnd
   } = useRouting();
 
   useEffect(() => {
@@ -34,21 +48,51 @@ function App() {
     injectAnimationStyles();
   }, []);
 
+  // Add ESC key handler to exit edit mode
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isEditingMode) {
+        toggleEditMode();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isEditingMode, toggleEditMode]);
+
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <Navbar />
+      <Navbar 
+        selectedProfile={selectedProfile}
+        onProfileChange={changeProfile}
+        loading={loading}
+      />
       
       <div className="flex-1 min-h-0">
         <VeloRouterMap
           startPoint={startPoint}
           endPoint={endPoint}
+          waypoints={waypoints}
           route={route}
+          routeSegments={routeSegments}
           loading={loading}
+          loadingSegments={loadingSegments}
           isEditingMode={isEditingMode}
           onMapClick={handleMapClick}
           onToggleEdit={toggleEditMode}
           onClearRoute={clearRoute}
           onSwapPoints={swapPoints}
+          onUpdateStartPoint={updateStartPoint}
+          onUpdateEndPoint={updateEndPoint}
+          onAddWaypoint={addWaypoint}
+          onUpdateWaypoint={updateWaypoint}
+          onRemoveWaypoint={removeWaypoint}
+          onRemoveStartPoint={removeStartPoint}
+          onRemoveEndPoint={removeEndPoint}
+          onMarkerDragStart={onMarkerDragStart}
+          onMarkerDragEnd={onMarkerDragEnd}
         />
       </div>
       

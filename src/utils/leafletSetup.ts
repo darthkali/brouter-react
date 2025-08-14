@@ -30,6 +30,52 @@ export const createEndPointIcon = () => new L.Icon({
   shadowSize: [41, 41]
 });
 
+// Cache for generated icons
+const iconCache = new Map<number, L.Icon>();
+
+// Create numbered waypoint icon (small circle with number) with caching
+export const createNumberedWaypointIcon = (number: number) => {
+  // Return cached icon if available
+  if (iconCache.has(number)) {
+    return iconCache.get(number)!;
+  }
+  
+  // Create a canvas-based icon URL
+  const canvas = document.createElement('canvas');
+  canvas.width = 24;
+  canvas.height = 24;
+  const ctx = canvas.getContext('2d');
+  
+  if (ctx) {
+    // Draw circle
+    ctx.fillStyle = '#2563eb';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(12, 12, 10, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Draw text
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 12px Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(number.toString(), 12, 12);
+  }
+  
+  const icon = new L.Icon({
+    iconUrl: canvas.toDataURL(),
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -12]
+  });
+  
+  // Cache the icon
+  iconCache.set(number, icon);
+  return icon;
+};
+
 // Create standard marker icon
 export const createMarkerIcon = () => new L.Icon({
   iconUrl: '/images/marker-icon.png',

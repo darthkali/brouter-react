@@ -37,13 +37,26 @@ export interface MapControlsProps {
   endPoint: Position | null;
 }
 
-export interface AnimatedLoadingLineProps {
-  startPoint: Position;
-  endPoint: Position;
+
+export interface LoadingSegment {
+  start: Position;
+  end: Position;
+}
+
+export interface AnimatedLoadingSegmentsProps {
+  segments: LoadingSegment[];
+}
+
+export interface RouteSegment {
+  id: string;
+  start: Position;
+  end: Position;
+  coordinates: Position[]; // All coordinates between start and end
+  isLoading: boolean;
 }
 
 export interface MapClickHandlerProps {
-  onMapClick: (position: Position) => void;
+  onMapClick: (position: Position, event?: any) => void;
 }
 
 export interface FooterProps {

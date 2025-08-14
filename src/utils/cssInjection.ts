@@ -1,4 +1,4 @@
-// CSS für bewegte gestrichelte Linie und Pulse-Animation
+// CSS für bewegte gestrichelte Linie, Pulse-Animation und nummerierte Waypoints
 const animatedDashStyle = `
   @keyframes dash {
     0% { stroke-dashoffset: 0; }
