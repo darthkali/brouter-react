@@ -85,6 +85,30 @@ const DraggablePolyline: React.FC<DraggablePolylineProps> = ({
       });
     }
 
+    // Helper function to check if a point is near a waypoint
+    const isNearWaypoint = (lat: number, lng: number, threshold: number = 0.0001): boolean => {
+      for (const waypoint of waypoints) {
+        const distance = Math.sqrt(
+          Math.pow(waypoint.lat - lat, 2) + Math.pow(waypoint.lng - lng, 2)
+        );
+        if (distance < threshold) return true;
+      }
+      // Also check start and end points
+      if (startPoint) {
+        const distance = Math.sqrt(
+          Math.pow(startPoint.lat - lat, 2) + Math.pow(startPoint.lng - lng, 2)
+        );
+        if (distance < threshold) return true;
+      }
+      if (endPoint) {
+        const distance = Math.sqrt(
+          Math.pow(endPoint.lat - lat, 2) + Math.pow(endPoint.lng - lng, 2)
+        );
+        if (distance < threshold) return true;
+      }
+      return false;
+    };
+
     // Create ghost markers for each route segment
     for (let routeIdx = 0; routeIdx < positions.length - 1; routeIdx++) {
       const start = positions[routeIdx];
@@ -103,6 +127,11 @@ const DraggablePolyline: React.FC<DraggablePolylineProps> = ({
       // Calculate midpoint
       const midLat = (start.lat + end.lat) / 2;
       const midLng = (start.lng + end.lng) / 2;
+      
+      // Skip this ghost marker if it's too close to an existing waypoint
+      if (isNearWaypoint(midLat, midLng)) {
+        continue;
+      }
 
       // Create invisible draggable marker
       const ghostMarker = L.marker([midLat, midLng], {
@@ -138,10 +167,14 @@ const DraggablePolyline: React.FC<DraggablePolylineProps> = ({
           }
         }
         
-        // Show the ghost marker for the closest segment
+        // Show the ghost marker for the closest segment, but not if we're too close to a waypoint
         if (closestSegment === routeIdx && minDistance < 20) { // 20px tolerance
-          clearTimeout(hoverTimeout);
-          ghostMarker.setOpacity(0.8);
+          // Additional check: don't show if mouse is near a waypoint
+          const mouseLatLng = e.latlng;
+          if (!isNearWaypoint(mouseLatLng.lat, mouseLatLng.lng, 0.0005)) { // Larger threshold for mouse position
+            clearTimeout(hoverTimeout);
+            ghostMarker.setOpacity(0.8);
+          }
         }
       });
 

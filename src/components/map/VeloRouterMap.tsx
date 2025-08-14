@@ -90,6 +90,7 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
           position={[waypoint.lat, waypoint.lng]}
           icon={createNumberedWaypointIcon(index + 1)}
           draggable={true}
+          zIndexOffset={1000}
           eventHandlers={{
             dragend: (e) => {
               const marker = e.target;

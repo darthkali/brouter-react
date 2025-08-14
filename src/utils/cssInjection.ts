@@ -16,9 +16,16 @@ const animatedDashStyle = `
   .numbered-waypoint-icon {
     background: transparent;
     border: none;
+    z-index: 1000 !important;
+    position: relative;
   }
   .numbered-waypoint-icon svg {
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    cursor: pointer;
+  }
+  .numbered-waypoint-icon:hover svg {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
   }
 `;
 
