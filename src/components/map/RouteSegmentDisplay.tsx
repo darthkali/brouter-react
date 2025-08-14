@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Polyline } from 'react-leaflet';
 import { RouteSegment } from '../../types';
 
@@ -37,4 +37,27 @@ const RouteSegmentDisplay: React.FC<RouteSegmentDisplayProps> = ({
   );
 };
 
-export default RouteSegmentDisplay;
+// Memoize component to prevent unnecessary re-renders
+export default memo(RouteSegmentDisplay, (prevProps, nextProps) => {
+  // Custom comparison to avoid re-rendering if segments haven't changed
+  if (prevProps.segments.length !== nextProps.segments.length) {
+    return false;
+  }
+  
+  for (let i = 0; i < prevProps.segments.length; i++) {
+    const prev = prevProps.segments[i];
+    const next = nextProps.segments[i];
+    
+    if (prev.id !== next.id || 
+        prev.isLoading !== next.isLoading || 
+        prev.coordinates.length !== next.coordinates.length) {
+      return false;
+    }
+  }
+  
+  return (
+    prevProps.color === nextProps.color &&
+    prevProps.weight === nextProps.weight &&
+    prevProps.opacity === nextProps.opacity
+  );
+});
