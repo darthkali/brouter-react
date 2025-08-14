@@ -1,3 +1,11 @@
+## [0.4.3](https://github.com/darthkali/brouter-react/compare/v0.4.2...v0.4.3) (2025-08-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @testing-library/user-event to v14 ([19ba12c](https://github.com/darthkali/brouter-react/commit/19ba12cb0779cc968da22d09eb5867b5754d7088))
+* **deps:** update dependency typescript to v5 ([6942e8a](https://github.com/darthkali/brouter-react/commit/6942e8a457ee0d29816815ca627c7a2d465573c0))
+
 ## [0.4.2](https://github.com/darthkali/brouter-react/compare/v0.4.1...v0.4.2) (2025-08-14)
 
 

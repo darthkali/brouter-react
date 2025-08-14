@@ -1,6 +1,6 @@
 {
   "name": "velo-router",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.0.0",
