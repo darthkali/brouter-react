@@ -133,6 +133,64 @@ export const useRouting = () => {
     setLoadingSegments([]);
   }, [generateSegmentId]);
 
+  const addNewSegment = useCallback(async (fromPoint: Position, toPoint: Position) => {
+    setLoading(true);
+    
+    // Add loading segment for just the new segment
+    const loadingSeg: LoadingSegment = { start: fromPoint, end: toPoint };
+    setLoadingSegments([loadingSeg]);
+    
+    try {
+      const { route: segmentRoute, stats } = await fetchRoute(fromPoint, toPoint);
+      
+      const newSegment: RouteSegment = {
+        id: generateSegmentId(fromPoint, toPoint),
+        start: fromPoint,
+        end: toPoint,
+        coordinates: segmentRoute,
+        isLoading: false
+      };
+      
+      // Add the new segment to existing segments
+      setRouteSegments(prev => [...prev, newSegment]);
+      
+      // Update route stats by adding to existing stats
+      if (stats) {
+        setRouteStats(prevStats => {
+          if (!prevStats) {
+            return {
+              distance: stats.distance,
+              time: stats.time,
+              ascent: stats.ascent,
+              descent: stats.descent
+            };
+          }
+          return {
+            distance: prevStats.distance + stats.distance,
+            time: prevStats.time + stats.time,
+            ascent: prevStats.ascent + stats.ascent,
+            descent: prevStats.descent + stats.descent
+          };
+        });
+      }
+      
+    } catch (error) {
+      console.error('Error fetching new segment:', error);
+      // Add empty segment on error
+      const errorSegment: RouteSegment = {
+        id: generateSegmentId(fromPoint, toPoint),
+        start: fromPoint,
+        end: toPoint,
+        coordinates: [fromPoint, toPoint],
+        isLoading: false
+      };
+      setRouteSegments(prev => [...prev, errorSegment]);
+    }
+    
+    setLoading(false);
+    setLoadingSegments([]);
+  }, [generateSegmentId]);
+
   const handleMapClick = useCallback((position: Position) => {
     if (!isEditingMode) return;
     
@@ -146,18 +204,19 @@ export const useRouting = () => {
         createSegmentsFromPoints(startPoint, position, []);
       }, 100);
     } else {
-      // We have both start and end point, so add this as a waypoint and make it the new end point
-      const newWaypoints = [...waypoints, endPoint];
+      // We have both start and end point, so add current end point as waypoint and set new end point
+      const currentEndPoint = endPoint;
+      const newWaypoints = [...waypoints, currentEndPoint];
       
       setWaypoints(newWaypoints);
       setEndPoint(position);
       
-      // Update the route with the new waypoint and end point
+      // Only calculate the new segment from current end point to new position
       setTimeout(() => {
-        createSegmentsFromPoints(startPoint, position, newWaypoints);
+        addNewSegment(currentEndPoint, position);
       }, 100);
     }
-  }, [isEditingMode, startPoint, endPoint, waypoints, createSegmentsFromPoints]);
+  }, [isEditingMode, startPoint, endPoint, waypoints, createSegmentsFromPoints, addNewSegment]);
 
   const toggleEditMode = useCallback(() => {
     setIsEditingMode(!isEditingMode);
