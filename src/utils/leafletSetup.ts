@@ -30,6 +30,16 @@ export const createEndPointIcon = () => new L.Icon({
   shadowSize: [41, 41]
 });
 
+// Create waypoint icon (blue)
+export const createWaypointIcon = () => new L.Icon({
+  iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+  shadowUrl: '/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
 // Create standard marker icon
 export const createMarkerIcon = () => new L.Icon({
   iconUrl: '/images/marker-icon.png',

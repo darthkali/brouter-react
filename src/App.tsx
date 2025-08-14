@@ -19,16 +19,22 @@ function App() {
   const {
     startPoint,
     endPoint,
+    waypoints,
     route,
+    routeSegments,
     isEditingMode,
     loading,
+    loadingSegments,
     routeStats,
     handleMapClick,
     toggleEditMode,
     clearRoute,
     swapPoints,
     updateStartPoint,
-    updateEndPoint
+    updateEndPoint,
+    addWaypoint,
+    updateWaypoint,
+    removeWaypoint
   } = useRouting();
 
   useEffect(() => {
@@ -44,8 +50,11 @@ function App() {
         <VeloRouterMap
           startPoint={startPoint}
           endPoint={endPoint}
+          waypoints={waypoints}
           route={route}
+          routeSegments={routeSegments}
           loading={loading}
+          loadingSegments={loadingSegments}
           isEditingMode={isEditingMode}
           onMapClick={handleMapClick}
           onToggleEdit={toggleEditMode}
@@ -53,6 +62,9 @@ function App() {
           onSwapPoints={swapPoints}
           onUpdateStartPoint={updateStartPoint}
           onUpdateEndPoint={updateEndPoint}
+          onAddWaypoint={addWaypoint}
+          onUpdateWaypoint={updateWaypoint}
+          onRemoveWaypoint={removeWaypoint}
         />
       </div>
       

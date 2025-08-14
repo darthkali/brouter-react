@@ -1,37 +1,51 @@
 import React from 'react';
-import { MapContainer, TileLayer, Marker, Polyline } from 'react-leaflet';
-import { Position } from '../../types';
-import { createStartPointIcon, createEndPointIcon } from '../../utils/leafletSetup';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import { Position, LoadingSegment, RouteSegment } from '../../types';
+import { createStartPointIcon, createEndPointIcon, createWaypointIcon } from '../../utils/leafletSetup';
 import MapClickHandler from './MapClickHandler';
-import AnimatedLoadingLine from './AnimatedLoadingLine';
+import AnimatedLoadingSegments from './AnimatedLoadingSegments';
+import RouteSegmentDisplay from './RouteSegmentDisplay';
 import MapControls from './MapControls';
+import DraggablePolyline from './DraggablePolyline';
 
 interface VeloRouterMapProps {
   startPoint: Position | null;
   endPoint: Position | null;
+  waypoints: Position[];
   route: Position[];
+  routeSegments: RouteSegment[];
   loading: boolean;
+  loadingSegments: LoadingSegment[];
   isEditingMode: boolean;
-  onMapClick: (position: Position) => void;
+  onMapClick: (position: Position, event?: any) => void;
   onToggleEdit: () => void;
   onClearRoute: () => void;
   onSwapPoints: () => void;
   onUpdateStartPoint: (position: Position) => void;
   onUpdateEndPoint: (position: Position) => void;
+  onAddWaypoint: (position: Position, index: number) => void;
+  onUpdateWaypoint: (index: number, position: Position) => void;
+  onRemoveWaypoint: (index: number) => void;
 }
 
 const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
   startPoint,
   endPoint,
+  waypoints,
   route,
+  routeSegments,
   loading,
+  loadingSegments,
   isEditingMode,
   onMapClick,
   onToggleEdit,
   onClearRoute,
   onSwapPoints,
   onUpdateStartPoint,
-  onUpdateEndPoint
+  onUpdateEndPoint,
+  onAddWaypoint,
+  onUpdateWaypoint,
+  onRemoveWaypoint
 }) => {
   return (
     <MapContainer 
@@ -70,6 +84,25 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
         />
       )}
       
+      {waypoints.map((waypoint, index) => (
+        <Marker 
+          key={`waypoint-${index}`}
+          position={[waypoint.lat, waypoint.lng]}
+          icon={createWaypointIcon()}
+          draggable={true}
+          eventHandlers={{
+            dragend: (e) => {
+              const marker = e.target;
+              const position = marker.getLatLng();
+              onUpdateWaypoint(index, { lat: position.lat, lng: position.lng });
+            },
+            dblclick: () => {
+              onRemoveWaypoint(index);
+            }
+          }}
+        />
+      ))}
+      
       {endPoint && (
         <Marker 
           position={[endPoint.lat, endPoint.lng]}
@@ -85,16 +118,30 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
         />
       )}
       
-      {loading && startPoint && endPoint && (
-        <AnimatedLoadingLine startPoint={startPoint} endPoint={endPoint} />
+      {/* Show all route segments (loaded ones will be visible, loading ones won't) */}
+      <RouteSegmentDisplay 
+        segments={routeSegments}
+        color="var(--color-error)"
+        weight={5}
+        opacity={0.7}
+      />
+      
+      {/* Show loading animations */}
+      {loading && loadingSegments.length > 0 && (
+        <AnimatedLoadingSegments segments={loadingSegments} />
       )}
       
+      {/* Show draggable polyline for interaction when not loading */}
       {route.length > 0 && !loading && (
-        <Polyline 
-          positions={route.map(point => [point.lat, point.lng])}
-          color="var(--color-error)"
-          weight={5}
-          opacity={0.7}
+        <DraggablePolyline 
+          positions={route}
+          startPoint={startPoint}
+          endPoint={endPoint}
+          waypoints={waypoints}
+          onAddWaypoint={onAddWaypoint}
+          color="transparent"
+          weight={15}
+          opacity={0.1}
         />
       )}
     </MapContainer>

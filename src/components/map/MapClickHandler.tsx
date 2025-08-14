@@ -4,7 +4,7 @@ import { MapClickHandlerProps } from '../../types';
 const MapClickHandler: React.FC<MapClickHandlerProps> = ({ onMapClick }) => {
   useMapEvents({
     click(e) {
-      onMapClick(e.latlng);
+      onMapClick(e.latlng, e);
     },
   });
   return null;
