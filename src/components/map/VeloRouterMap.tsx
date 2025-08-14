@@ -33,6 +33,22 @@ interface VeloRouterMapProps {
   onMarkerDragEnd?: () => void;
 }
 
+// Component to manage map cursor based on editing mode
+const MapCursor: React.FC<{ isEditingMode: boolean }> = ({ isEditingMode }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    const mapContainer = map.getContainer();
+    if (isEditingMode) {
+      mapContainer.style.cursor = 'crosshair';
+    } else {
+      mapContainer.style.cursor = '';
+    }
+  }, [map, isEditingMode]);
+
+  return null;
+};
+
 // Native Leaflet markers component
 const NativeMarkers: React.FC<{
   startPoint: Position | null;
@@ -262,6 +278,8 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
       />
       
       <MapClickHandler onMapClick={onMapClick} />
+      
+      <MapCursor isEditingMode={isEditingMode} />
       
       <NativeMarkers 
         startPoint={startPoint}
