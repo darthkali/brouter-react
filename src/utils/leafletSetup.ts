@@ -32,16 +32,32 @@ export const createEndPointIcon = () => new L.Icon({
 
 // Create numbered waypoint icon (small circle with number)
 export const createNumberedWaypointIcon = (number: number) => {
-  const svg = `
-    <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="12" cy="12" r="10" fill="#2563eb" stroke="#ffffff" stroke-width="2"/>
-      <text x="12" y="17" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">${number}</text>
-    </svg>
-  `;
+  // Create a canvas-based icon URL
+  const canvas = document.createElement('canvas');
+  canvas.width = 24;
+  canvas.height = 24;
+  const ctx = canvas.getContext('2d');
   
-  return new L.DivIcon({
-    html: svg,
-    className: 'numbered-waypoint-icon',
+  if (ctx) {
+    // Draw circle
+    ctx.fillStyle = '#2563eb';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(12, 12, 10, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Draw text
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 12px Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(number.toString(), 12, 12);
+  }
+  
+  return new L.Icon({
+    iconUrl: canvas.toDataURL(),
     iconSize: [24, 24],
     iconAnchor: [12, 12],
     popupAnchor: [0, -12]
