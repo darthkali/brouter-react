@@ -16,6 +16,8 @@ interface VeloRouterMapProps {
   onToggleEdit: () => void;
   onClearRoute: () => void;
   onSwapPoints: () => void;
+  onUpdateStartPoint: (position: Position) => void;
+  onUpdateEndPoint: (position: Position) => void;
 }
 
 const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
@@ -27,7 +29,9 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
   onMapClick,
   onToggleEdit,
   onClearRoute,
-  onSwapPoints
+  onSwapPoints,
+  onUpdateStartPoint,
+  onUpdateEndPoint
 }) => {
   return (
     <MapContainer 
@@ -55,6 +59,14 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
         <Marker 
           position={[startPoint.lat, startPoint.lng]}
           icon={createStartPointIcon()}
+          draggable={true}
+          eventHandlers={{
+            dragend: (e) => {
+              const marker = e.target;
+              const position = marker.getLatLng();
+              onUpdateStartPoint({ lat: position.lat, lng: position.lng });
+            }
+          }}
         />
       )}
       
@@ -62,6 +74,14 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
         <Marker 
           position={[endPoint.lat, endPoint.lng]}
           icon={createEndPointIcon()}
+          draggable={true}
+          eventHandlers={{
+            dragend: (e) => {
+              const marker = e.target;
+              const position = marker.getLatLng();
+              onUpdateEndPoint({ lat: position.lat, lng: position.lng });
+            }
+          }}
         />
       )}
       

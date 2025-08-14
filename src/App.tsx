@@ -26,7 +26,9 @@ function App() {
     handleMapClick,
     toggleEditMode,
     clearRoute,
-    swapPoints
+    swapPoints,
+    updateStartPoint,
+    updateEndPoint
   } = useRouting();
 
   useEffect(() => {
@@ -49,6 +51,8 @@ function App() {
           onToggleEdit={toggleEditMode}
           onClearRoute={clearRoute}
           onSwapPoints={swapPoints}
+          onUpdateStartPoint={updateStartPoint}
+          onUpdateEndPoint={updateEndPoint}
         />
       </div>
       
