@@ -1,3 +1,10 @@
+## [0.4.2](https://github.com/darthkali/brouter-react/compare/v0.4.1...v0.4.2) (2025-08-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @testing-library/jest-dom to v6.7.0 ([7801148](https://github.com/darthkali/brouter-react/commit/780114882b34d1258f4fc2e44962ef59301b91b9))
+
 ## [0.4.1](https://github.com/darthkali/brouter-react/compare/v0.4.0...v0.4.1) (2025-08-13)
 
 
