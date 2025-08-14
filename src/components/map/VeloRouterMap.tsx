@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import { Position, LoadingSegment, RouteSegment } from '../../types';
-import { createStartPointIcon, createEndPointIcon, createWaypointIcon } from '../../utils/leafletSetup';
+import { createStartPointIcon, createEndPointIcon, createNumberedWaypointIcon } from '../../utils/leafletSetup';
 import MapClickHandler from './MapClickHandler';
 import AnimatedLoadingSegments from './AnimatedLoadingSegments';
 import RouteSegmentDisplay from './RouteSegmentDisplay';
@@ -88,7 +88,7 @@ const VeloRouterMap: React.FC<VeloRouterMapProps> = ({
         <Marker 
           key={`waypoint-${index}`}
           position={[waypoint.lat, waypoint.lng]}
-          icon={createWaypointIcon()}
+          icon={createNumberedWaypointIcon(index + 1)}
           draggable={true}
           eventHandlers={{
             dragend: (e) => {
